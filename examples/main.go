@@ -3,15 +3,16 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/jessevdk/go-flags"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/donkeywon/go-flags"
 )
 
 type EditorOptions struct {
-	Input  flags.Filename `short:"i" long:"input" description:"Input file" default:"-"`
-	Output flags.Filename `short:"o" long:"output" description:"Output file" default:"-"`
+	Input  flags.Filename `flag-short:"i" flag-long:"input" flag-description:"Input file" flag-default:"-"`
+	Output flags.Filename `flag-short:"o" flag-long:"output" flag-description:"Output file" flag-default:"-"`
 }
 
 type Point struct {
@@ -49,24 +50,24 @@ func (p Point) MarshalFlag() (string, error) {
 
 type Options struct {
 	// Example of verbosity with level
-	Verbose []bool `short:"v" long:"verbose" description:"Verbose output"`
+	Verbose []bool `flag-short:"v" flag-long:"verbose" flag-description:"Verbose output"`
 
 	// Example of optional value
-	User string `short:"u" long:"user" description:"User name" optional:"yes" optional-value:"pancake"`
+	User string `flag-short:"u" flag-long:"user" flag-description:"User name" flag-optional:"yes" flag-optional-value:"pancake"`
 
 	// Example of map with multiple default values
-	Users map[string]string `long:"users" description:"User e-mail map" default:"system:system@example.org" default:"admin:admin@example.org"`
+	Users map[string]string `flag-long:"users" flag-description:"User e-mail map" flag-default:"system:system@example.org" flag-default:"admin:admin@example.org"`
 
 	// Example of option group
-	Editor EditorOptions `group:"Editor Options"`
+	Editor EditorOptions `flag-group:"Editor Options"`
 
 	// Example of custom type Marshal/Unmarshal
-	Point Point `long:"point" description:"A x,y point" default:"1,2"`
+	Point Point `flag-long:"point" flag-description:"A x,y point" flag-default:"1,2"`
 }
 
 var options Options
 
-var parser = flags.NewParser(&options, flags.Default)
+var parser = flags.NewParser(&options, flags.Default, flags.FlagTagPrefix("flag-"))
 
 func main() {
 	if _, err := parser.Parse(); err != nil {
